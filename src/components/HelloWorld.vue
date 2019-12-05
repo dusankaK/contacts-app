@@ -1,5 +1,12 @@
+
 <template>
   <div>
+    <form v-on:submit.prevent>
+      <input type="email" v-model="email" />
+      <input type="password" v-model="password" />
+      <button @click="login">Login</button>
+    </form>
+
     <router-link :to="{ name: 'add'}">Add new contact</router-link>
     <h3>All contacts</h3>
 
@@ -11,7 +18,8 @@
         <br />
         {{contact.email}}
         <br />
-        <router-link :to="{ name: 'single', params: { id: contact.id }}">Single Contact</router-link><br>
+        <router-link :to="{ name: 'single', params: { id: contact.id }}">Single Contact</router-link>
+        <br />
         <router-link :to="{ name: 'edit', params: { id: contact.id }}">Edit Contact</router-link>
       </li>
     </ul>
@@ -24,7 +32,9 @@ import { contactservice } from "../services/ContactService";
 export default {
   data() {
     return {
-      contacts: []
+      contacts: [],
+      email: "",
+      password: ""
     };
   },
 
@@ -32,24 +42,17 @@ export default {
     contactservice.getAll().then(response => {
       this.contacts = response.data;
     });
+  },
+
+  methods: {
+    login() {
+      contactservice
+        .login({ email: this.email, password: this.password })
+        .then(r => {
+          console.log("Login success", r);
+          localStorage.setItem('token', r.data.token)
+        });
+    }
   }
 };
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-</style>

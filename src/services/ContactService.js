@@ -3,6 +3,7 @@ import axios from 'axios'
 export default class ContactService {
     constructor() {
         axios.defaults.baseURL = 'http://localhost:8000/api/'
+        axios.defaults.headers.common = {'Authorization': `Bearer ${localStorage.getItem('token')}`}
     }
 
     getAll() {
@@ -23,6 +24,10 @@ export default class ContactService {
 
     edit(contact) {
         return axios.put(`contacts/${contact.id}`, contact)
+    }
+
+    login(credentials) {
+        return axios.post('login', credentials)
     }
 }
 
